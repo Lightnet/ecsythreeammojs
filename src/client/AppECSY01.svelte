@@ -1,6 +1,7 @@
 <script>
   //https://medium.com/@bluemagnificent/intro-to-javascript-3d-physics-using-ammo-js-and-three-js-dd48df81f591
   //import Ammo from "../common/ammo";
+
   import { onMount, onDestroy, createEventDispatcher} from 'svelte';
   import { generateId } from './generateid';
   //import { gun, onLogin } from './mjs';
@@ -65,8 +66,11 @@
     window.dispatchEvent(new Event('resize'));
   });
   //https://medium.com/@bluemagnificent/intro-to-javascript-3d-physics-using-ammo-js-and-three-js-dd48df81f591
+
   function initPhysics(){
-    Ammo().then( startPhysics )
+    //console.log(window.Ammo);
+    //window.Ammo().then( startPhysics );
+    startPhysics();
   }
 
   function startPhysics(){
@@ -88,7 +92,7 @@
 
     physicsWorld           = new Ammo.btDiscreteDynamicsWorld(dispatcher, overlappingPairCache, solver, collisionConfiguration);
     physicsWorld.setGravity(new Ammo.btVector3(0, -10, 0));
-    console.log(physicsWorld);
+    //console.log(physicsWorld);
 
     tmpTrans = new Ammo.btTransform();
   }
@@ -159,7 +163,7 @@
   };
   
   function createBlock(){
-    console.log("INIT BLOCK")
+    //console.log("INIT BLOCK");
     
     let pos = {x: 0, y: 0, z: 0};
     let scale = {x: 50, y: 2, z: 50};
@@ -223,7 +227,7 @@
 
     let rbInfo = new Ammo.btRigidBodyConstructionInfo( mass, motionState, colShape, localInertia );
     //Ammo
-    console.dir(Ammo);
+    //console.dir(Ammo);
     let body = new Ammo.btRigidBody( rbInfo );
     entity.addComponent(PhysicsObject3D, {object: body});
 

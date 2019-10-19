@@ -14,7 +14,7 @@ export class Physics3DSystem extends System {
     this.IgnorePhysics = false;
     //this.tmpTrans = null;
     
-    console.log("init Physics3DSystem");
+    //console.log("init Physics3DSystem");
     /*
     if(typeof window == undefined){
       console.log(global)
