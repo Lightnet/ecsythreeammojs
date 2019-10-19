@@ -11,7 +11,9 @@ localStorage.clear();
 //import App from './App02.svelte';
 //import App from './App03.svelte';
 //import App from './App04.svelte';
-import App from './App05.svelte';
+//import App from './App05.svelte';
+
+import App from './AppECSY01.svelte';
 
 const app = new App({
 	target: document.body,
