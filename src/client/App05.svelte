@@ -14,14 +14,6 @@
   let elcontent;
   let navheight = 22;
 
-  let scene;
-  let camera;
-  let renderer;
-  let cube;
-  let clock = new THREE.Clock();
-
-  let rigidBodies = [], tmpTrans;
-
   // http://bulletphysics.org/Bullet/BulletFull/classbtCollisionObject.html
   let CollisionFlags = {
     CF_STATIC_OBJECT : 1,
@@ -54,15 +46,12 @@
 
     elcontent.style.height = (parent.clientHeight - navheight) + 'px';
     elcontent.style.width = parent.clientWidth + 'px';
-
-    //renderer.setSize( window.innerWidth, (window.innerHeight - 22) );
   }
 
   onMount(() => {
     elcomponent = document.getElementById(idcomponent);
     elnav = document.getElementById(idnav);
     elcontent = document.getElementById(idcontent);
-    //initScene();
     initPhysics();
     handle_auto_resize();
     window.addEventListener('resize', handle_auto_resize);
@@ -70,7 +59,8 @@
   });
   //https://medium.com/@bluemagnificent/intro-to-javascript-3d-physics-using-ammo-js-and-three-js-dd48df81f591
   function initPhysics(){
-    Ammo().then( startPhysics )
+    //Ammo().then( startPhysics )
+    startPhysics();
   }
   let pos;
   function startPhysics(){
@@ -99,9 +89,7 @@
     physicsWorld.setGravity(new Ammo.btVector3(0, -10, 0));
     //physicsWorld.setContactProcessedCallback(collisionCallbackPointer);
     //physicsWorld.setContactAddedCallback(collisionCallbackPointer);
-    console.log(physicsWorld);
-
-    tmpTrans = new Ammo.btTransform();
+    //console.log(physicsWorld);
   }
 
   function init(){
@@ -135,8 +123,12 @@
     Ammo.destroy(rbInfo);
     body.setCollisionFlags( body.getCollisionFlags());
     world.addRigidBody( body );
-    var ptr = body.a || body.ptr;
+    //var ptr = body.a || body.ptr;
+    var ptr = body.H;
     objects[ptr] = body;
+    console.log(ptr);
+    console.log(body);
+    //console.log(objects[ptr]);
     body.setActivationState( DISABLE_DEACTIVATION );
     
     // Create sensor sphere
@@ -153,8 +145,11 @@
     Ammo.destroy(rbInfo);
     sensorBody.setCollisionFlags( sensorBody.getCollisionFlags() | CollisionFlags.CF_NO_CONTACT_RESPONSE );
     world.addRigidBody( sensorBody );
-    var ptr = sensorBody.a || sensorBody.ptr;
+    //var ptr = sensorBody.a || sensorBody.ptr;
+    var ptr = sensorBody.H;
+    console.log(sensorBody);
     objects[ptr] = sensorBody;
+    //console.log(objects[ptr]);
     sensorBody.setActivationState( DISABLE_DEACTIVATION );
   }
 
@@ -197,34 +192,52 @@
       if ( num_contacts === 0 ) {
           continue;
       }
-      console.log("contact");
+      //console.log("contact");
+      //console.log(manifold);
+      let mBodyA = manifold.getBody0();
+      let mBodyB = manifold.getBody1();
       
-      var bodyA = objects[ manifold.getBody0() ];
-      var bodyB = objects[ manifold.getBody1() ];
+      var bodyA = objects[ mBodyA.H ];
+      var bodyB = objects[ mBodyB.H ];
+      //console.log(bodyA);
+      //console.log(bodyB);
 
-      //var bodyA =  manifold.getBody0();
-      //var bodyB =  manifold.getBody1();
-      //console.log(bodyA); //null
-      //console.log(bodyB); //null
-      //not working
       if(bodyA == sensorBody || bodyB == sensorBody){
         sensorBodyOverlapped = true;
-        console.log("sensorBodyOverlapped");
+        //console.log("sensorBodyOverlapped");
       }
-      //not working
-      if(bodyA == body || bodyB == body){
+
+      //console.log(body);
+      //console.log(mBodyA);
+      if(mBodyA.H == body.H || mBodyB.H == body.H){
         bodyOverlapped = true;
-        console.log("bodyOverlapped");
+        //console.log("bodyOverlapped");
       }
+
+
+      //not working
+      //if(bodyA == sensorBody || bodyB == sensorBody){
+        //sensorBodyOverlapped = true;
+        //console.log("sensorBodyOverlapped");
+      //}
+      //not working
+      //if(bodyA == body || bodyB == body){
+        //bodyOverlapped = true;
+        //console.log("bodyOverlapped");
+      //}
+
+
       
-      /*
+      
       // Optional:
-      for (var j = 0; j < num_contacts; j++ ) {
-        var pt = manifold.getContactPoint( j );
-        var normalOnB = pt.get_m_normalWorldOnB();
-        break;
-      }
-      */
+      //for (var j = 0; j < num_contacts; j++ ) {
+        //var pt = manifold.getContactPoint( j );
+        //var normalOnB = pt.get_m_normalWorldOnB();
+        //console.log('COLLISION DETECTED!');
+        //break;
+      //}
+      
+      
     }        
     render();
   }
